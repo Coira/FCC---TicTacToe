@@ -1,13 +1,13 @@
 body {
-
+    background-color: black;
 }
 
 #board {
     margin: 0 auto;
+    margin-top: 100px;
     
-    background-color: gray;
-    width: 300px;
-    height: 300px;
+    width: 600px;
+    height: 500px;
 
     display: flex;
     flex-direction: column;
@@ -25,13 +25,22 @@ body {
 .square {
     width: 33%;
     height: 100%;
+    color: white;
+    font-size: 30px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    cursor: pointer;
+    user-select: none;
     /*background-color: red;*/
 }
 
 .right-border {
-    border-right: 5px solid black;
+    border-right: 5px solid #0f8ade;
 }
 
 .bottom-border {
-    border-bottom: 5px solid black;
+    border-bottom: 5px solid #0f8ade;
 }
