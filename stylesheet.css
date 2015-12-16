@@ -44,3 +44,28 @@ body {
 .bottom-border {
     border-bottom: 5px solid #0f8ade;
 }
+
+.extras {
+    padding-top: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content:center;
+    align-items: center;
+}
+
+.info {
+    font-size: 26px;
+    color: white;
+}
+
+#reset {
+    display: flex;
+    justify-content:center;
+    align-items: center;
+    width: 120px;
+    height: 50px;
+    border-radius: 20px;
+    background-color: red;
+    font-size: 26px;
+    color: white;
+}

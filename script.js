@@ -7,6 +7,10 @@ $(document).ready(function() {
     });
 
     game.start();
+
+    $("#reset").click(function() {
+	game.reset();
+    });
 });
 
 var Game = function() {
@@ -15,12 +19,17 @@ var Game = function() {
     var playerSign = "O";
     var aiSign = "X";
     var order = [];
+    var wins = 0;
+    var losses = 0;
+    var draws = 0;
+    var gameOver = false;
     
     this.start = function() {
 
 	// clear the board
 	for (var i = 0; i < 9; i++) {
 	    board[i] = "";
+	    $("#s"+i).text("");
 	}
 
 	// TODO ask whether player wants to be X or O
@@ -30,12 +39,17 @@ var Game = function() {
 
     };
 
+    this.reset = function() {
+	gameOver = false;
+	this.start();
+    };
+    
     // called when player clicks on a square
     this.playerTurn = function(square) {
 	var index = parseInt(square.attr("id")[1]);
 
 	// if square is free, let player take her turn, otherwise ignore move
-	if (!board[index]) {
+	if (!board[index] && !gameOver) {
 	    takeTurn(playerSign, index, square);
 	    aiTurn();
 	}
@@ -97,7 +111,7 @@ var Game = function() {
 	var emptySquares = board.filter(function(square) {
 	    return square === "";
 	}).length;
-	    
+	
 	if (win(board, playerSign)) {
 	    return -10 - emptySquares;
 	}
@@ -150,6 +164,35 @@ var Game = function() {
 	square.text(sign);
 	board[position] = sign;
 	order.push(position);
+
+	// check whether game is over, and if so, score the game
+	isGameOver();
+
+    };
+
+
+    var isGameOver = function() {
+	// if gameOver is true, game's already been scored.
+	// player must click reset to continue
+	
+	if (!gameOver) {
+	    // is the board full or do we have a winner?
+	    if (win(board, playerSign)) {
+		wins++;
+		$("#wins").text("WINS: " + wins);
+		gameOver = true;
+	    }
+	    else if (win(board, aiSign)) {
+		losses++;
+		$("#losses").text("LOSSES: " + losses);
+		gameOver = true;
+	    }
+	    else if (boardFull(board)) {
+		draws++;
+		$("#draws").text("DRAWS: " + draws);
+		gameOver = true;
+	    }
+	}
     };
     
 };
