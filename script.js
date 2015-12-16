@@ -44,56 +44,68 @@ var Game = function() {
     // ai works out the best move to play, then takes it
     var aiTurn = function(){
 	var move = minimax(board, aiSign);
-	console.log(move);
 	takeTurn(aiSign, move[1]);
     };
 
+    // calculates the best possible move to take to ensure at least a draw
     var minimax = function(board, sign, pos) {
-	var maxScore = -10;
 	var gameScore = score(board);
-	
-	var multi = sign === aiSign ? 1 : -1;
-	/*if (sign === playerSign) {
-	  multi = -1;
-	  }*/
-	
+
+	// game's over, return the score
 	if (boardFull(board) || gameScore) {
 	    return [gameScore, pos];
 	}
 
-	var moves = getPossibleMoves(board);
-	var thisScore;
-	var bestMove = pos;
+	// mini-maxer. AI looks for biggest score, player looks for smallest
+	var multi = sign === aiSign ? 1 : -1;
 	
-	var oppSign = sign === "O" ? "X" : "O";
+	var moves = getPossibleMoves(board);
+	var bestScore = -100;
+	var positions = [pos];
+	var thisScore;
+	
+	var oppSign = sign === "O" ? "X" : "O";  // opponent's sign
 	while (moves.length > 0) {
 
 	    var position = moves.pop();
 	    var b = board.slice();
 	    b[position] = sign;
 
+	    // recursively call minimax
 	    var result = minimax(b, oppSign, position);
 	    thisScore = multi*result[0];
 
-	    if (thisScore >= maxScore) {
-		maxScore = thisScore;
-		bestMove = position;
+	    // not strictly necessary, but makes AI less predictable
+	    // make a list of all best possible moves
+	    if (thisScore === bestScore) {
+		positions.push(position);
+	    }
+	    else if (thisScore > bestScore) {
+		bestScore = thisScore;
+		positions = [position];
 	    }
 	}
 
-	return [multi*maxScore, bestMove];
+	// choose a move at random from the best moves
+	var randomMove = Math.floor(Math.random() * positions.length);
 	
+	return [multi*bestScore, positions[randomMove]];
     };
 
+    // score takes into account winning and shortest number of moves taken
     var score = function(board) {
+	var emptySquares = board.filter(function(square) {
+	    return square === "";
+	}).length;
+	    
 	if (win(board, playerSign)) {
-	    return -10;
+	    return -10 - emptySquares;
 	}
 	else if (win(board, aiSign)) {
-	    return 10;
+	    return 10 + emptySquares;
 	}
 	else {
-	    return 0;
+	    return 0;  // draw or no winner
 	}
     };
 
@@ -122,13 +134,14 @@ var Game = function() {
 	});
     };
 
+    // no more free squares available
     var boardFull = function(board) {
 	return !board.some(function(position) {
 	    return position === "" ;
 	});
     };
 
-    // adds sign to the game board and updates display
+    // adds sign (X or O) to the game board and updates display
     var takeTurn = function(sign, position, square){
 	if (!square) {
 	    square = $("#s"+position);
@@ -140,12 +153,3 @@ var Game = function() {
     };
     
 };
-
-
-var gameState = function(board, currentMove, movesTaken) {
-    this.board = board;
-    this.currentMove = currentMove;
-    this.movesTake = movesTaken;
-};
-
-
