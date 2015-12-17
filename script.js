@@ -1,4 +1,11 @@
 $(document).ready(function() {
+
+    // keep the board's width and height equal on page resize
+    $(window).resize(function(){
+	var width = $("#board").width();
+	$("#board").css({"height":width+"px"});
+    });
+    $(window).resize();
     
     var game = new Game();
     
@@ -6,42 +13,51 @@ $(document).ready(function() {
 	game.playerTurn($(this));
     });
 
-    game.start();
-
-    $("#reset").click(function() {
-	game.reset();
+    $("#switch").click(function() {
+	game.switchSides();
     });
+
+    game.start();
 });
 
 var Game = function() {
-
+    
     var board = [];
-    var playerSign = "O";
-    var aiSign = "X";
-    var order = [];
+    var playerSign = "X";
+    var aiSign = "O";
     var wins = 0;
     var losses = 0;
     var draws = 0;
     var gameOver = false;
+    var lastSquarePlayed = null;
+    var goFirst = true;
     
     this.start = function() {
-
+	gameOver = false;
+	
 	// clear the board
 	for (var i = 0; i < 9; i++) {
 	    board[i] = "";
 	    $("#s"+i).text("");
 	}
-
-	// TODO ask whether player wants to be X or O
 	
-	// if ai starts, have it take its turn
-	//aiTurn();
-
+	//if ai starts, have it take its turn
+	if (!goFirst) {
+	    takeTurn(aiSign, Math.floor(Math.random()*9));
+	}
     };
 
-    this.reset = function() {
-	gameOver = false;
+    // allow the player to swap between being O and X
+    this.switchSides = function() {
+	if (!gameOver) {
+	    goFirst = !goFirst;
+	    playerSign = playerSign === "O" ? "X" : "O";
+	    aiSign = aiSign === "O" ? "X" : "O";
+	}
+
+	$("#switch").text("Switch sides - Play as " + aiSign);
 	this.start();
+
     };
     
     // called when player clicks on a square
@@ -57,8 +73,8 @@ var Game = function() {
 
     // ai works out the best move to play, then takes it
     var aiTurn = function(){
-	var move = minimax(board, aiSign);
-	takeTurn(aiSign, move[1]);
+	var move = minimax(board, aiSign)[1];
+	takeTurn(aiSign, move);
     };
 
     // calculates the best possible move to take to ensure at least a draw
@@ -148,7 +164,7 @@ var Game = function() {
 	});
     };
 
-    // no more free squares available
+    // are there any free squares available?
     var boardFull = function(board) {
 	return !board.some(function(position) {
 	    return position === "" ;
@@ -161,15 +177,19 @@ var Game = function() {
 	    square = $("#s"+position);
 	}
 	
+	if (lastSquarePlayed) {
+	    lastSquarePlayed.removeClass("lastPlayed");
+	}
+
+	// highlight last move made - easier for player to see
+	square.addClass("lastPlayed");
 	square.text(sign);
 	board[position] = sign;
-	order.push(position);
-
+	lastSquarePlayed = square;
+	
 	// check whether game is over, and if so, score the game
 	isGameOver();
-
     };
-
 
     var isGameOver = function() {
 	// if gameOver is true, game's already been scored.
@@ -180,19 +200,26 @@ var Game = function() {
 	    if (win(board, playerSign)) {
 		wins++;
 		$("#wins").text("WINS: " + wins);
-		gameOver = true;
+		endGame();
 	    }
 	    else if (win(board, aiSign)) {
 		losses++;
 		$("#losses").text("LOSSES: " + losses);
-		gameOver = true;
+		endGame();
 	    }
 	    else if (boardFull(board)) {
 		draws++;
 		$("#draws").text("DRAWS: " + draws);
-		gameOver = true;
+		endGame();
 	    }
 	}
     };
-    
-};
+
+    // end game and visual indication that game's over
+    var endGame = function() {
+	gameOver = true;
+	$("#switch").text("RESET GAME");
+	lastSquarePlayed.removeClass("lastPlayed");
+    };
+
+};  

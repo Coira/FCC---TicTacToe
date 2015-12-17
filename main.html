@@ -5,6 +5,7 @@
 
 
   <script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+  <link href='https://fonts.googleapis.com/css?family=Architects+Daughter|Robo+Slab' rel='stylesheet' type='text/css'>
   
   <link type="text/css" rel="stylesheet" href="stylesheet.css"/>
   <script type="text/javascript" src="script.js"></script>
@@ -12,6 +13,7 @@
   
   <body>
     <div id="board">
+      <div id="dummy"></div>
       <div class="row">
 	<div id="s0" class="square bottom-border right-border"></div>
 	<div id="s1" class="square bottom-border right-border"></div>
@@ -30,14 +32,18 @@
 	<div id="s8" class="square"></div>
       </div>
     </div>
-    <div>
 
-      <div class="extras">
-	<div id="reset">RESET</div>
+    <div class="extras">
+      
+      <div class="infoLine">
 	<div class="info" id="wins">WINS: 0</div>
 	<div class="info" id="losses">LOSSES: 0</div>
 	<div class="info" id="draws">DRAWS: 0</div>
       </div>
+      
+     <div id="switch">Switch sides - Play as O</div>
+    </div>
+    
   </body>
 
 </HTML>
