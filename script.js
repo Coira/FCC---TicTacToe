@@ -45,6 +45,10 @@ var Game = function() {
 	if (!goFirst) {
 	    takeTurn(aiSign, Math.floor(Math.random()*9));
 	}
+
+	$("#wins").removeClass("highlight");
+	$("#draws").removeClass("highlight");
+	$("#losses").removeClass("highlight");
     };
 
     // allow the player to swap between being O and X
@@ -178,11 +182,11 @@ var Game = function() {
 	}
 	
 	if (lastSquarePlayed) {
-	    lastSquarePlayed.removeClass("lastPlayed");
+	    lastSquarePlayed.removeClass("highlight");
 	}
 
 	// highlight last move made - easier for player to see
-	square.addClass("lastPlayed");
+	square.addClass("highlight");
 	square.text(sign);
 	board[position] = sign;
 	lastSquarePlayed = square;
@@ -200,16 +204,19 @@ var Game = function() {
 	    if (win(board, playerSign)) {
 		wins++;
 		$("#wins").text("WINS: " + wins);
+		$("#wins").addClass("highlight");
 		endGame();
 	    }
 	    else if (win(board, aiSign)) {
 		losses++;
 		$("#losses").text("LOSSES: " + losses);
+		$("#losses").addClass("highlight");
 		endGame();
 	    }
 	    else if (boardFull(board)) {
 		draws++;
 		$("#draws").text("DRAWS: " + draws);
+		$("#draws").addClass("highlight");
 		endGame();
 	    }
 	}
@@ -219,7 +226,7 @@ var Game = function() {
     var endGame = function() {
 	gameOver = true;
 	$("#switch").text("RESET GAME");
-	lastSquarePlayed.removeClass("lastPlayed");
+	lastSquarePlayed.removeClass("highlight");
     };
 
 };  

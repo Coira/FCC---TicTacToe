@@ -40,11 +40,11 @@ body {
 }
 
 .right-border {
-    border-right: 5px solid #0f8ade;
+    border-right: 5px solid #b7ff2d;
 }
 
 .bottom-border {
-    border-bottom: 5px solid #0f8ade;
+    border-bottom: 5px solid #b7ff2d;
 }
 
 .extras {
@@ -79,17 +79,12 @@ body {
     width: 250px;
     height: 50px;
     border-radius: 20px;
-    background-color: red;
+    background-color: #376ab6;
     font-size: 20px;
     color: white;
-
-    
+    margin-top: 30px;
 }
 
-.lastPlayed {
-    color: red;
-}
-
-.winningLine {
-    color: blue;
+.highlight {
+    color: #d92f2f;
 }
